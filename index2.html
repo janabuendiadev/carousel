@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Carousel</title>
+  <style>
+    body{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+
+      background: url('background 2.jpeg')  no-repeat center top;
+      background-size: 500px;
+      background-attachment: fixed;
+    }
+    
+    #carousel {
+      width: 400px;
+      height: 250px;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 30px;
+      background: #fff;
+    }
+    #carousel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    #carousel img.active {
+      display: block;
+    }
+    .buttons {
+      margin-top: 10px;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 0 5px;
+      cursor: pointer;
+      border: none;
+      background: #51c255;
+      color: white;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+
+    .title {
+    color: rgb(12, 11, 11);       
+    position: relative; 
+    z-index: 1;         
+    text-shadow: 2px 2px 4px rgba(163, 156, 156, 0.6); 
+  }
+  </style>
+</head>
+<body>
+ <h2 class="title">Upload 3 Images for Carousel! ^^</h2>
+  <input type="file" id="imageUpload" accept="image/*" multiple>
+
+  <div id="carousel"></div>
+
+  <div class="buttons">
+    <button onclick="prevImage()">Prev</button>
+    <button onclick="nextImage()">Next</button>
+  </div>
+
+  <script>
+    let images = [];
+    let currentIndex = 0;
+    let autoPlayInterval;
+
+    document.getElementById("imageUpload").addEventListener("change", function(e) {
+      const files = e.target.files;
+      if (files.length !== 3) {
+        alert("Please upload exactly 3 images!");
+        return;
+      }
+
+      images = [];
+      const carousel = document.getElementById("carousel");
+      carousel.innerHTML = "";
+
+      for (let i = 0; i < files.length; i++) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(files[i]);
+        if (i === 0) img.classList.add("active");
+        carousel.appendChild(img);
+        images.push(img);
+      }
+
+      currentIndex = 0;
+      startAutoPlay();
+    });
+
+    function showImage(index) {
+      images.forEach((img, i) => {
+        img.classList.toggle("active", i === index);
+      });
+    }
+
+    function prevImage() {
+      if (images.length === 0) return;
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      showImage(currentIndex);
+      restartAutoPlay();
+    }
+
+    function nextImage() {
+      if (images.length === 0) return;
+      currentIndex = (currentIndex + 1) % images.length;
+      showImage(currentIndex);
+      restartAutoPlay();
+    }
+
+    function startAutoPlay() {
+      clearInterval(autoPlayInterval);
+      autoPlayInterval = setInterval(() => {
+        nextImage();
+      }, 2000); 
+    }
+
+    function restartAutoPlay() {
+      startAutoPlay(); 
+    }
+  </script>
+</body>
+</html>
